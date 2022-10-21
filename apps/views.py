@@ -14,6 +14,18 @@ class Blog(TemplateView):
 
 
 class SingleBlog(TemplateView):
-    template_name = 'single-blog.html'
+    template_name = 'blog-single.html'
+
+
+class Product(TemplateView):
+    template_name = 'product.html'
+
+
+class Cart(TemplateView):
+    template_name = 'cart.html'
+
+
+class Contact(TemplateView):
+    template_name = 'contact.html'
 
 # Create your views here.
