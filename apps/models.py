@@ -12,7 +12,7 @@ class Category(models.Model):
         verbose_name_plural = 'Категории'
 
     def __str__(self):
-        return self.name
+        return f'{self.id} - {self.name}'
 
 class Status(models.Model):
     name = models.CharField(max_length=50)
