@@ -1,7 +1,8 @@
-from unittest.util import _MAX_LENGTH
-from django.db import models
 
+from django.db import models
+from djangoapp import settings
 # Create your models here.
+
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
@@ -14,6 +15,7 @@ class Category(models.Model):
     def __str__(self):
         return f'{self.id} - {self.name}'
 
+
 class Status(models.Model):
     name = models.CharField(max_length=50)
 
@@ -23,6 +25,7 @@ class Status(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
@@ -39,3 +42,14 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+
+class Cart(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    count = models.IntegerField()
+
+    class Meta:
+        verbose_name = 'Элемент корзины'
+        verbose_name_plural = 'Корзина'
+
+    def __str__(self):
+        return f'{self.id} - {self.product.name}'
