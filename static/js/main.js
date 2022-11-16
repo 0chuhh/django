@@ -158,6 +158,8 @@
         $(this).off('click');
     });
 
+
+
     /*[ +/- num product ]
     ===========================================================*/
     $('.btn-num-product-down').on('click', function(e){

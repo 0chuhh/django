@@ -25,6 +25,7 @@ urlpatterns = [
     path('single-blog', SingleBlog.as_view()),
     path('cart', CartTemplate.as_view()),
     path('product/', ProductView.as_view()),
+    path('product/delete/', ProductDelete.as_view()),
     path('contact', Contact.as_view()),
     path('product/create/', ProductCreate.as_view())
 
