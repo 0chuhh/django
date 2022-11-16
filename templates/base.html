@@ -550,6 +550,7 @@
 
 	<!-- Back to top -->
 	<div class="btn-back-to-top bg0-hov" id="myBtn">
+        <input type="hidden" id="csrftoken" value="{{ csrf_token }}">
 		<span class="symbol-btn-back-to-top">
 			<i class="fa fa-angle-double-up" aria-hidden="true"></i>
 		</span>
@@ -587,8 +588,14 @@
 	<script type="text/javascript">
 		$('.block2-btn-addcart').each(function(){
 			var nameProduct = $(this).parent().parent().parent().find('.block2-name').html();
+            var product_id = $(this).parent().parent().parent().parent()[0].id
 			$(this).on('click', function(){
+                let data = new FormData();
+                data.append('id', product_id)
+                data.append('csrfmiddlewaretoken', document.getElementById('csrftoken').value);
+                fetch('/product/create/', {method:'POST', body:data, credentials: 'same-origin'})
 				swal(nameProduct, "is added to cart !", "success");
+                console.log(product_id)
 			});
 		});
 
