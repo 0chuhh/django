@@ -7,10 +7,17 @@ from apps.models import *
 
 class BaseView(TemplateView):
     def get_context_data(self, **kwargs):
+        self.request.session[0] = 'bar'
+        sessionid = self.request.COOKIES.get('sessionid')
+        if(len(Cart.objects.filter(guest_session_id=sessionid)) == 0):
+            current_cart = Cart(guest_session_id=sessionid)
+            current_cart.save()
+
         context = super().get_context_data(**kwargs)
-        context['carts'] = Cart.objects.all()
+        carts = CartDetails.objects.filter(cart_id=Cart.objects.filter(guest_session_id=sessionid)[0].id)
+        context['carts'] = carts
         total = 0
-        for cart in Cart.objects.all():
+        for cart in carts:
             total += cart.count * cart.product.price
         context['total'] = total
         return context
@@ -78,16 +85,17 @@ class ProductCreate(CreateView):
 
     def post(self, request, *args, **kwargs):
         id = self.request.POST['id']
+        sessionid = self.request.COOKIES.get('sessionid')
         product = Product.objects.filter(id=id)[0]
-        if len(Cart.objects.filter(product=product)) == 0:
-            current_cart = Cart(product=product, count=1)
+        cart_id = Cart.objects.filter(guest_session_id=sessionid)[0]
+        if len(CartDetails.objects.filter(product_id=product.id)) == 0:
+            current_cart = CartDetails(cart_id=cart_id, product=product, count=1)
             current_cart.save()
         else:
-            current_cart = Cart.objects.filter(product=product)[0]
+            current_cart = CartDetails.objects.filter(cart_id=cart_id, product=product)[0]
             current_cart.count += 1
             current_cart.save()
 
-        print(len(Cart.objects.filter(product=product)))
         return render(request, 'product.html')
 
 class ProductDelete(DeleteView):
