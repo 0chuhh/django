@@ -7,19 +7,29 @@ from apps.models import *
 
 class BaseView(TemplateView):
     def get_context_data(self, **kwargs):
-        self.request.session[0] = 'bar'
+        self.request.session[0] = 'barr'
         sessionid = self.request.COOKIES.get('sessionid')
-        if(len(Cart.objects.filter(guest_session_id=sessionid)) == 0):
+
+        try:
             current_cart = Cart(guest_session_id=sessionid)
             current_cart.save()
+        except:
+            print('error')
+
 
         context = super().get_context_data(**kwargs)
-        carts = CartDetails.objects.filter(cart_id=Cart.objects.filter(guest_session_id=sessionid)[0].id)
-        context['carts'] = carts
-        total = 0
-        for cart in carts:
-            total += cart.count * cart.product.price
-        context['total'] = total
+        # carts = [{}]
+        # if sessionid:
+        try:
+            carts = CartDetails.objects.filter(cart_id=Cart.objects.filter(guest_session_id=sessionid)[0].id)
+            total = 0
+            for cart in carts:
+                total += cart.count * cart.product.price
+            context['total'] = total
+            context['carts'] = carts
+        except:
+            print('error')
+
         return context
 
 class Index(BaseView, TemplateView):
@@ -88,7 +98,7 @@ class ProductCreate(CreateView):
         sessionid = self.request.COOKIES.get('sessionid')
         product = Product.objects.filter(id=id)[0]
         cart_id = Cart.objects.filter(guest_session_id=sessionid)[0]
-        if len(CartDetails.objects.filter(product_id=product.id)) == 0:
+        if len(CartDetails.objects.filter(cart_id=cart_id, product_id=product.id)) == 0:
             current_cart = CartDetails(cart_id=cart_id, product=product, count=1)
             current_cart.save()
         else:
