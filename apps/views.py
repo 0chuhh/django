@@ -1,9 +1,11 @@
 from unicodedata import category
 from django.views.generic import TemplateView, CreateView, ListView, DeleteView
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
+from django.forms.models import model_to_dict
 from django.shortcuts import render
 from django.contrib import admin
 from apps.models import *
+import json
 
 class BaseView(TemplateView):
     def get_context_data(self, **kwargs):
@@ -105,8 +107,8 @@ class ProductCreate(CreateView):
             current_cart = CartDetails.objects.filter(cart_id=cart_id, product=product)[0]
             current_cart.count += 1
             current_cart.save()
-
-        return render(request, 'product.html')
+        print(product)
+        return JsonResponse({'product':dict(map(lambda kv: (kv[0], str(kv[1])), model_to_dict(product).items())), 'count':str(current_cart.count), 'len':len(list(CartDetails.objects.filter(cart_id=cart_id))[0])}, safe=False)
 
 class ProductDelete(DeleteView):
     model = Cart
