@@ -108,7 +108,7 @@ class ProductCreate(CreateView):
             current_cart.count += 1
             current_cart.save()
         print(product)
-        return JsonResponse({'product':dict(map(lambda kv: (kv[0], str(kv[1])), model_to_dict(product).items())), 'count':str(current_cart.count), 'len':len(list(CartDetails.objects.filter(cart_id=cart_id))[0])}, safe=False)
+        return JsonResponse({'product':dict(map(lambda kv: (kv[0], str(kv[1])), model_to_dict(product).items())), 'count':str(current_cart.count)}, safe=False)
 
 class ProductDelete(DeleteView):
     model = Cart

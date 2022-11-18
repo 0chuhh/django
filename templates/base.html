@@ -566,7 +566,7 @@
                 data.append('csrfmiddlewaretoken', document.getElementById('csrftoken').value);
                 var x = fetch('/product/create/', {method:'POST', body:data, credentials: 'same-origin'}).then((response)=>response.json()).then((data)=>{
 					console.log(data)
-					$('.header-icons-noti').html(data.len)
+					$('.header-icons-noti').html(Number($('.header-icons-noti').html()) + 1)
 					$('.header-cart-wrapitem').append(`<li class="header-cart-item">
 									<div class="header-cart-item-img">
 										<img src="../${ data.product.image }" alt="IMG">
