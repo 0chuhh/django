@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.contrib import admin
 from apps.models import *
 import json
-
+from django.core import serializers
 class BaseView(TemplateView):
     def get_context_data(self, **kwargs):
         self.request.session[0] = 'barr'
@@ -96,19 +96,29 @@ class ProductCreate(CreateView):
     fields = "__all__"
 
     def post(self, request, *args, **kwargs):
+        sessionid = self.request.COOKIES.get('sessionid')
+
         id = self.request.POST['id']
         sessionid = self.request.COOKIES.get('sessionid')
         product = Product.objects.filter(id=id)[0]
         cart_id = Cart.objects.filter(guest_session_id=sessionid)[0]
-        if len(CartDetails.objects.filter(cart_id=cart_id, product_id=product.id)) == 0:
-            current_cart = CartDetails(cart_id=cart_id, product=product, count=1)
-            current_cart.save()
-        else:
-            current_cart = CartDetails.objects.filter(cart_id=cart_id, product=product)[0]
-            current_cart.count += 1
-            current_cart.save()
+        # if CartDetails.objects.filter(cart_id=cart_id, product_id=product.id).count() == 0:
+        #     current_cart = CartDetails(cart_id=cart_id, product=product, count=1)
+        #     current_cart.save()
+        # else:
+        #     current_cart = CartDetails.objects.filter(cart_id=cart_id, product=product)[0]
+        #     current_cart.count += 1
+        #     current_cart.save()
+        current_cart, created = CartDetails.objects.get_or_create(cart_id=cart_id, product=product, defaults={'count': 0})
+        current_cart.count += 1
+        current_cart.save()
         print(product)
-        return JsonResponse({'product':dict(map(lambda kv: (kv[0], str(kv[1])), model_to_dict(product).items())), 'count':str(current_cart.count)}, safe=False)
+        carts = CartDetails.objects.filter(cart_id=cart_id)
+        data = serializers.serialize("json", carts)
+        new_carts = [{'product':dict(map(lambda kv: (kv[0], str(kv[1])), model_to_dict(cart.product).items())), 'count':str(cart.count)} for cart in carts]
+        
+
+        return JsonResponse({'product':dict(map(lambda kv: (kv[0], str(kv[1])), model_to_dict(product).items())), 'cart':new_carts}, safe=False)
 
 class ProductDelete(DeleteView):
     model = Cart
