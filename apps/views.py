@@ -149,4 +149,34 @@ class Contact(BaseView, TemplateView):
 
         return context
 
+
+class OrderCreate(CreateView):
+    model = Cart
+    fields = "__all__"
+
+    def post(self, request, *args, **kwargs):
+        sessionid = self.request.COOKIES.get('sessionid')
+
+        country = self.request.POST['country']
+        state = self.request.POST['state']
+        zip_code = self.request.POST['zip']
+        try:
+            current_order = Orders(guest_session_id=sessionid, country=country, zip_code=zip_code, state=state)
+            current_order.save()
+            cart_id = Cart.objects.filter(guest_session_id=sessionid)[0]
+            carts = CartDetails.objects.filter(cart_id=cart_id)
+            for cart in carts:
+                order_detail, created = OrderDetails.objects.get_or_create(order_id = current_order, product=cart.product, count=cart.count)
+                order_detail.save()
+
+            cart_id.delete()
+
+        except:
+            print('error')
+        
+       
+        
+
+        return JsonResponse({'product':'ok'}, safe=False)
+
 # Create your views here.

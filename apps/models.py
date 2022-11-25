@@ -65,3 +65,28 @@ class CartDetails(models.Model):
         verbose_name_plural = 'Детали корзины'
     def __str__(self):
         return f'{self.cart_id} - {self.product.name}'
+
+class Orders(models.Model):
+    guest_session_id = models.CharField(max_length=200)
+    date_create = models.DateTimeField(auto_now=True)
+    country = models.CharField(max_length=200)
+    state = models.CharField(max_length=200)
+    zip_code = models.CharField(max_length=200)
+
+    class Meta:
+        verbose_name = 'заказ'
+        verbose_name_plural = 'заказы'
+
+    def __str__(self):
+        return f'{self.guest_session_id} - {self.date_create}'
+
+class OrderDetails(models.Model):
+    order_id = models.ForeignKey(to=Orders, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    count = models.IntegerField()
+
+    class Meta:
+        verbose_name = 'Элемент деталей заказа'
+        verbose_name_plural = 'Детали заказов'
+    def __str__(self):
+        return f'{self.order_id} - {self.product.name}'

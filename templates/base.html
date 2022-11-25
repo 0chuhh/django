@@ -603,6 +603,25 @@
         // data.append('csrfmiddlewaretoken', document.getElementById('csrftoken').value);
         })
 
+		$('.checkout-btn').on('click', function(e){
+			e.preventDefault()
+			let data = new FormData();
+			if($('.zip-input')[0].value && $('.country-select')[0].value && $('.state-input')[0].value){
+				data.append('zip', $('.zip-input')[0].value)
+				data.append('country', $('.country-select')[0].value)
+				data.append('state', $('.state-input')[0].value)
+				data.append('csrfmiddlewaretoken', document.getElementById('csrftoken').value);
+				var x = fetch('orders/create/', {method:'POST', body:data, credentials: 'same-origin'})
+				$('.header-icons-noti').html('0')
+
+				$('.header-cart-wrapitem').html('')
+				$('.cart-table-row').html('')
+			}
+			
+
+
+		})
+
 		$('.block2-btn-addwishlist').each(function(){
 			var nameProduct = $(this).parent().parent().parent().find('.block2-name').html();
 			$(this).on('click', function(){

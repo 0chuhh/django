@@ -18,15 +18,18 @@
 			<div class="container-table-cart pos-relative">
 				<div class="wrap-table-shopping-cart bgwhite">
 					<table class="table-shopping-cart">
-						<tr class="table-head">
-							<th class="column-1"></th>
-							<th class="column-2">Product</th>
-							<th class="column-3">Price</th>
-							<th class="column-4 p-l-70">Quantity</th>
-							<th class="column-5">Total</th>
-						</tr>
-                        {% for cart in carts %}
-                        <tr class="table-row">
+						<th>
+							<tr class="table-head">
+								<th class="column-1"></th>
+								<th class="column-2">Product</th>
+								<th class="column-3">Price</th>
+								<th class="column-4 p-l-70">Quantity</th>
+								<th class="column-5">Total</th>
+							</tr>
+						</th>
+						<tbody class="cart-table-row">
+							{% for cart in carts %}
+                        <tr class=" table-row">
 							<td class="column-1">
 								<div class="cart-img-product b-rad-4 o-f-hidden">
 									<img src="{{cart.product.image}}" alt="IMG-PRODUCT">
@@ -40,6 +43,8 @@
 							<td class="column-5">${% widthratio cart.count 1 cart.product.price %}</td>
 						</tr>
                         {% endfor %}
+						</tbody>
+                        
 					</table>
 				</div>
 			</div>
@@ -79,7 +84,7 @@
 						</span>
 
 						<div class="rs2-select2 rs3-select2 rs4-select2 bo4 of-hidden w-size21 m-t-8 m-b-12">
-							<select class="selection-2" name="country">
+							<select class="selection-2 country-select" name="country">
 								<option>Select a country...</option>
 								<option>US</option>
 								<option>UK</option>
@@ -88,19 +93,14 @@
 						</div>
 
 						<div class="size13 bo4 m-b-12">
-						<input class="sizefull s-text7 p-l-15 p-r-15" type="text" name="state" placeholder="State /  country">
+						<input class="state-input sizefull s-text7 p-l-15 p-r-15" type="text" name="state" placeholder="State /  country">
 						</div>
 
 						<div class="size13 bo4 m-b-22">
-							<input class="sizefull s-text7 p-l-15 p-r-15" type="text" name="postcode" placeholder="Postcode / Zip">
+							<input class="zip-input sizefull s-text7 p-l-15 p-r-15" type="text" name="postcode" placeholder="Zip">
 						</div>
 
-						<div class="size14 trans-0-4 m-b-10">
-							<!-- Button -->
-							<button class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4">
-								Update Totals
-							</button>
-						</div>
+						
 					</div>
 				</div>
 
@@ -117,8 +117,8 @@
 
 				<div class="size15 trans-0-4">
 					<!-- Button -->
-					<button class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4">
-						Proceed to Checkout
+					<button class="checkout-btn flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4">
+						Checkout
 					</button>
 				</div>
 			</div>
